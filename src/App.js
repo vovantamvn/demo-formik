@@ -1,23 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { useFormik } from 'formik';
 
 function App() {
+  const formik = useFormik({
+    initialValues: {
+      phone: '',
+    },
+    validate: (values) => {
+      console.log('validate', values);
+
+      const errors = {};
+
+      if (values.phone === '') {
+        errors.phone = "Phone can't empty";
+      } else if (!/^[0-9]{10}$/.test(values.phone)) {
+        errors.phone = 'Phone invalid';
+      }
+
+      return errors;
+    },
+    onSubmit: (values) => {
+      console.log('You are submit', values);
+    },
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <form onSubmit={formik.handleSubmit}>
+        <label htmlFor="phone_id">Phone number</label>
+        <br />
+        <input
+          id="phone_id"
+          name="phone"
+          values={formik.values.phone}
+          onChange={formik.handleChange}
+        />
+        <p style={{ color: 'red' }}>{formik.errors.phone}</p>
+
+        <input type="submit" value="Submit" />
+      </form>
     </div>
   );
 }
